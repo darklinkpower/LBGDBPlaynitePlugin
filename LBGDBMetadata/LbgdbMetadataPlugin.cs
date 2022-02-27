@@ -1,4 +1,11 @@
-﻿using System;
+﻿using EFCore.BulkExtensions;
+using LBGDBMetadata.Extensions;
+using LBGDBMetadata.LaunchBox.Api;
+using LBGDBMetadata.LaunchBox.Metadata;
+using Microsoft.EntityFrameworkCore;
+using Playnite.SDK;
+using Playnite.SDK.Plugins;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -7,14 +14,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Xml.Serialization;
-using EFCore.BulkExtensions;
-using LBGDBMetadata.Extensions;
-using LBGDBMetadata.LaunchBox.Api;
-using LBGDBMetadata.LaunchBox.Metadata;
-using Microsoft.EntityFrameworkCore;
-using Playnite.SDK;
-using Playnite.SDK.Plugins;
-using Game = Playnite.SDK.Models.Game;
 
 namespace LBGDBMetadata
 {
@@ -125,6 +124,10 @@ namespace LBGDBMetadata
                 metadataContext.Database.Migrate();
             }
             Settings = new LbgdbMetadataSettings(this);
+            Properties = new MetadataPluginProperties
+            {
+                HasSettings = true
+            };
             var apiOptions = new Options
             {
                 MetaDataFileName = Settings.MetaDataFileName,
@@ -141,42 +144,6 @@ namespace LBGDBMetadata
         public override UserControl GetSettingsView(bool firstRunView)
         {
             return new LbgdbMetadataSettingsView(this);
-        }
-
-
-        public override IEnumerable<ExtensionFunction> GetFunctions()
-        {
-            return base.GetFunctions();
-        }
-
-        public override void OnGameStarting(Game game)
-        {
-            base.OnGameStarting(game);
-        }
-
-        public override void OnGameStarted(Game game)
-        {
-            base.OnGameStarted(game);
-        }
-
-        public override void OnGameStopped(Game game, long ellapsedSeconds)
-        {
-            base.OnGameStopped(game, ellapsedSeconds);
-        }
-
-        public override void OnGameInstalled(Game game)
-        {
-            base.OnGameInstalled(game);
-        }
-
-        public override void OnGameUninstalled(Game game)
-        {
-            base.OnGameUninstalled(game);
-        }
-
-        public override void OnApplicationStarted()
-        {
-            base.OnApplicationStarted();
         }
 
         public async Task<bool> NewMetadataAvailable()
@@ -362,7 +329,6 @@ namespace LBGDBMetadata
             MetadataField.Icon,
             MetadataField.CoverImage,
             MetadataField.BackgroundImage
-
         };
     }
 }
